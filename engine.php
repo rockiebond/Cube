@@ -29,6 +29,12 @@ class engine {
     }
 }
 
+class Phase {
+    public $phaseName;
+
+    public $ruleActionPairs;
+}
+
 class Context {
     private static $context;
 
@@ -63,18 +69,30 @@ class ContextInitAction {
     public function execute() {
         $context = Context::getInstance();
         $context['source_flag'] = Pay_Base_Request::getSourceFlag();
+    }
+}
+
+class Action {
+    public function execute(){
 
     }
 }
 
-interface Action {
-    public function execute();
-}
-
-interface Ruler {
-    public function assert($rule, $context);
-}
-
-interface Rule {
+class Rule {
 
 }
+
+class RuleActionPair {
+    public $rule;
+    public $action;
+    public function __construct($rule, $action) {
+        $this->rule = $rule;
+        $this->action = $action;
+    }
+}
+$rule = new Rule();
+$action = new Action();
+$arr = array(
+    new RuleActionPair($rule,$action),
+    );
+var_dump($arr);
