@@ -166,8 +166,18 @@ class CommonParamChecker {
     }
 }
 
-class PhaseParamCheck{
-    static $actions =array(
+class PayActionPhases {
+    protected $phases = array(
+        'PhaseParamCheck',
+    );
+
+    public function __construct($arrPhaseConf) {
+        $this->phases = $arrPhaseConf;
+    }
+}
+
+class PhaseParamCheck {
+    public $actions =array(
         'true' => array(
             'InitContext',
             'CommonParamChecker',
@@ -176,5 +186,9 @@ class PhaseParamCheck{
             'SdkParamChecker',
         ),
     );
+
+    public function loadFromArray($actions) {
+        $this->actions = $actions;
+    }
 }
 

@@ -25,7 +25,18 @@ class EngineTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testGenPairs() {
-        $pairs = RuleActionPairFactory::getMultipleRuleActionPair(PhaseParamCheck::$actions);
+        $arrConf = array(
+            'true' => array(
+                'InitContext',
+                'CommonParamChecker',
+            ),
+            'sourceFlag in [3]' => array(
+                'SdkParamChecker',
+            ),
+        );
+
+        $phase = new PhaseParamCheck($arrConf);
+        $pairs = RuleActionPairFactory::getMultipleRuleActionPair($phase->actions);
         $this->assertTrue(is_array($pairs));
         $this->assertEquals(2, count($pairs));
     }
@@ -34,7 +45,18 @@ class EngineTest extends PHPUnit_Framework_TestCase {
      * @expectedException Exception
      */
     public function testEngineExecute() {
-        $phase = new Phase('paramCheck', PhaseParamCheck::$actions);
+        $arrConf = array(
+            'true' => array(
+                'InitContext',
+                'CommonParamChecker',
+            ),
+            'sourceFlag in [3]' => array(
+                'SdkParamChecker',
+            ),
+        );
+        $phase = new PhaseParamCheck($arrConf);
+
+        $phase = new Phase('paramCheck', $phase->actions);
         $engine = new Engine();
         $result = $engine->executeSinglePhase($phase);
         $this->assertEquals(false, $result);
