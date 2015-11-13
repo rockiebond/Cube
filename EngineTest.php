@@ -41,9 +41,24 @@ class EngineTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     *
+     * Test issdk operator.
      */
-    public function testInitContext() {
+    public function testOpIsSdk() {
+        $rule = 'issdk()';
+        $this->context['sourceFlag'] = 3;
+        $result = $this->ruler->assert($rule, $this->context);
+        $this->assertTrue($result);
     }
+
+    /**
+     * Test Chinese char.
+     */
+    public function testChineseOperator() {
+        $rule = '无线端()';
+        $this->context['sourceFlag'] = 3;
+        $result = $this->ruler->assert($rule, $this->context);
+        $this->assertTrue($result);
+    }
+}
 
 

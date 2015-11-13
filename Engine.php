@@ -54,41 +54,62 @@ class Phase {
     }
 }
 
-class Context {
+class Context extends Hoa\Ruler\Context {
     private static $context;
 
+    /**
+     * 请求参数。
+     */
+    private $arrRequest;
+
+    /**
+     * 获取实例。
+     */
     static function getInstance() {
         if(self::$context == null) {
-            self::$context = new Hoa\Ruler\Context();
+            self::$context = new Context();
         }
         
         return self::$context;
     }
+
+    /**
+     * 获取请求参数的副本。
+     */
+    public function getRequestParam() {
+        $result = $this->arrRequest;
+        return $result; 
+    }
 }
 
-class Ruler {
+class Ruler extends Hoa\Ruler\Ruler{
     private static $ruler;
 
     static function getInstance() {
         if(null == self::$ruler) {
-            self::$ruler = new Hoa\Ruler\Ruler();
+            self::$ruler = new Ruler();
+            self::$ruler->initRuler();
         }
         return self::$ruler;
     }
 
     //initialize user defined operator, you can even use Chinese.
-    static function initRuler($phase) {
-        self::$ruler->getDefaultAsserter()->setOperator('isSdk', function () {
+    protected function initRuler($phase = '') {
+        self::$ruler->getDefaultAsserter()->setOperator('issdk', function () {
             $context = Context::getInstance();
             return $context['sourceFlag'] == 3;
         });
+        self::$ruler->getDefaultAsserter()->setOperator('无线端', function () {
+            $context = Context::getInstance();
+            return $context['sourceFlag'] == 3;
+        });
+
     }
 }
 
 class InitContext {
     public function execute() {
         $context = Context::getInstance();
-        $context['source_flag'] = '3';
     }
 }
 
@@ -140,10 +161,16 @@ class SdkParamChecker {
     }
 }
 
+class CommonParamChecker {
+    public function execute() {
+    }
+}
+
 class PhaseParamCheck{
     static $actions =array(
         'true' => array(
-            'InitContext'
+            'InitContext',
+            'CommonParamChecker',
         ),
         'sourceFlag in [3]' => array(
             'SdkParamChecker',
